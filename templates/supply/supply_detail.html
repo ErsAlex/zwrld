@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %} 
+
+<div class="absolute inset-y-0 inset-x-0 left-72">
+<div class="w-1/2 mt-16 ml-16">
+    <h2 class="font-bold text-xl mb-4 text-center mx-auto">Поставка №: {{supply.supply_id}} Дата поставки: {{supply.supply_delivery_date}}</h2>
+    <table class="w-full text-sm text-left rtl:text-right text-black-500 dark:text-black-400">
+        <thead class="text-xs text-black-700 uppercase bg-gray-50 dark:bg-black-700 dark:text-black-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Штрих код
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Наименование
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Статус наличия
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Продан
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr class="bg-Black border-b dark:bg-white-800 dark:border-blue-700">
+                {% if item.is_sold == True %}
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black bg-green-300">
+                {% else %}
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black">
+                {% endif %}
+                    {{ item.barcode}}
+                </th>
+                <td class="px-6 py-1">
+                    {{ item.item_category }}
+                </td>
+                <td class="px-6 py-1">
+                    {{ item.in_store_str}}
+                </td>
+                <td class="px-6 py-1 font-medium">
+                    {{ item.is_sold_str }}
+                </td>
+                {% if supply.supply_accepted == False %}
+                <td class="px-6 py-1">
+                    <form method="post">
+                        {% csrf_token %}
+                    <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" id="delete_item_id" name="delete_item_id" value="{{item.item_id}}">Удалить</button>
+                    </form>
+                </td>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+            </table>
+            <div class="flex flex-col items-center mt-4">
+                <!-- Help text -->
+                <span class="text-sm text-gray-500">
+                 <span class="font-medium text-black">{{ items.number }}</span> из <span class="font-semibold text-black">{{items.paginator.num_pages}}</span>
+                </span>
+                <!-- Buttons -->
+                <div class="inline-flex mt-2 xs:mt-0">
+                  {% if items.has_previous %}
+                    <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                      <a href="?page={{ items.previous_page_number }}">предыдущая</a>
+                    </button>
+                    {% endif %}
+              
+                    {% if items.has_next %}
+                    <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                      <a href="?page={{ items.next_page_number }}">следующая</a>
+                    </button>
+                    {% endif %}
+                </div>
+              </div>
+    </div>
+</div>
+    </div>
+    {% endblock  %}

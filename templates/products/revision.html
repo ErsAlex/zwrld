@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="absolute inset-y-0 inset-x-0 left-72">
+    <div class="mt-16"
+    <div class="inline-flex shadow-sm space-x-2" role="group">
+        <form method="get">
+            <input type="text" id='search-query' name='search-query' class="text-black bg-white font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-cente h-10" placeholder='Поиск'>
+            <select name="product_type" id="product_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">
+              <option hidden value="" disabled selected>Продукт</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="FOOD">Корм</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="SNACKS">Вкусняшки</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="LITTER">Наполнитель</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MEDECINE">Медицина</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="TOYS">Игрушки и Акссесуары</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="GROOMING">Красота и здороье</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
+            </select>
+            <select name="pet_type" id="pet_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">
+              <option hidden value="" disabled selected>Питомец</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="CATS">Кошки</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="DOGS">Собаки</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="RODENTS">Грызуны</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="FISH">Рыбы</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="BIRDS">Птицы</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MULTIPLE">Разные</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
+              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
+            </select>
+            <button type="submit"class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">Найти</button>
+            </form>
+          </div>
+          <div class="">
+          <table class="w-full text-sm text-left rtl:text-right text-black-500">
+              <tr class="border-b border-blue-500">
+                  <th scope="col" class="px-1 py-3 text-center">
+                      Артикул
+                  </th>
+                  <th scope="col" class="px-1 py-3 text-center">
+                      Продукт
+                  </th>
+                  <th scope="col" class="px-1  py-3 text-center">
+                      Питомец
+                  </th>
+                  <th scope="col" class="px-1 py-3 text-center">
+                      Брэнд
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-center">
+                      Описание
+                  </th>
+                  <th scope="col" class="px-1 py-3 text-center">
+                      Вес
+                  </th>
+                  <th scope="col" class="px-2 py-3 text-center">
+                    Тип
+                  </th>
+                  <th scope="col" class="px-2 py-3 text-center">
+                    Кол-во в магазине
+                  </th>
+                  <th scope="col" class="px-2 py-3">
+                    Кол-во 
+                  </th>
+                  <th scope="col" class="px-2 py-3">
+                    Штрих-код
+                  </th>
+              </tr>
+          </thead>
+            {% for i in category %}
+            <tbody>
+              <tr class="border-b dark:bg-white-800 whitespace-nowrap dark:border-blue-700">
+                <td class="px-1 py-1 text-center">
+                  <label for="category-{{ i.id }}">{{ i.article }}</label>
+                </td>
+                <td class="px-4 py-1 text-center">
+                  <label for="category-{{ i.id }}">{{ i.product_type_str }}</label>
+                </td>
+                <td class="px-4 py-1 text-center">
+                  <label for="category-{{ i.id }}">{{ i.pet_type_str }}</label>
+                </td>
+                <td class="px-1 py-1 text-center">
+                  <label for="category-{{ i.id }}">{{ i.brand }}</label>
+                </td>
+                <td class="px-2 py-1 text-center">
+                  <label for="category-{{ i.id }}">{{ i.description }}</label>
+                </td>
+                <td class="px-1 py-1 text-center">
+                  <label for="category-{{ i.id }}">{{ i.weight }}</label>
+                </td>
+                <td class="px-1 py-1 text-center">
+                  <label for="category-{{ i.id }}">{{ i.dry_type_str }}</label>
+                </td>
+                <td class="px-1 py-1 text-center" >
+                    <label for="category-{{ i.id }}">{{ i.item_count }}</label>
+                  </td>
+                <form method="post">
+                    {% csrf_token %}
+                <td class="px-1 py-1">
+                  <input type="text" id="quantity" name="quantity" placeholder="Количество" class="w-14 h-5">
+                </td>
+                <td class="px-1 py-0">
+                <input type="text" id="barcode" name="barcode" placeholder="Штрих-код" class="w-14 h-5">
+                  </td>
+                  <td class="px-1 py-0">
+                <button type="submit" class="font-medium text-green-500 dark:text-green-500 hover:underline" name="category" value="{{i.ItemCategory_id}}">Добавить</button>
+                    </td>
+              </tr>
+            </tbody>
+        </form>
+            {%endfor%}
+          </table>
+        </div>
+        <div class="flex flex-col items-center mt-4">
+          <!-- Help text -->
+          <span class="text-sm text-gray-500">
+           <span class="font-medium text-black">{{ category.number }}</span> из <span class="font-semibold text-black">{{category.paginator.num_pages}}</span>
+          </span>
+          <!-- But tons -->
+            <div class="inline-flex mt-2 xs:mt-0">
+            {% if category.has_previous %}
+              <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <a href="?page={{ category.previous_page_number }}">предыдущая</a>
+              </button>
+              {% endif %}
+        
+              {% if category.has_next %}
+              <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <a href="?page={{ category.next_page_number }}">следующая</a>
+              </button>
+              {% endif %}
+            </div>
+          </div>
+{% endblock  %}

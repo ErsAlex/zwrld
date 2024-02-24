@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="absolute inset-y-0 inset-x-0 left-72">
+    <div class="mt-16"
+    <div class="inline-flex shadow-sm space-x-2" role="group">
+        <form method="get">
+        <input type="text" id='search-query' name='search-query' class="text-black white font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-cente h-10" placeholder='Поиск'>
+        <select name="product_type" id="product_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">
+          <option hidden value="" disabled selected>Продукт</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="FOOD">Корм</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="SNACKS">Вкусняшки</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="LITTER">Наполнитель</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MEDECINE">Медицина</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="TOYS">Игрушки и Акссесуары</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="GROOMING">Красота и здороье</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
+        </select>
+        <select name="pet_type" id="pet_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">
+          <option hidden value="" disabled selected>Питомец</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="CATS">Кошки</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="DOGS">Собаки</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="RODENTS">Грызуны</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="FISH">Рыбы</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="BIRDS">Птицы</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MULTIPLE">Разные</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
+          <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
+        </select>
+        <button type="submit"class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">Найти</button>
+        </form>
+    </div>
+
+<div class="">
+    <table class="w-full text-sm text-left rtl:text-right text-black-500 dark:text-black-400">
+        <thead class="text-xs text-center text-black-700 uppercase bg-gray-50 dark:bg-black-700 dark:text-black-400">
+            <tr>
+                <th scope="col" class="px-2 py-1">
+                    Артикул
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Категория
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Брэнд
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Питомец
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Вес в гр.
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Тип (для кормов)
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Описание
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Важность
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Количество
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    План
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Тип продажи
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Редактировать Категорию
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Текущая цена
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Цена Поставки за ед.
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Наценка
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Редактировать Цену
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in category_list %}
+            <tr class="text-center bg-Black border-b dark:bg-white-800 dark:border-blue-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black">
+                 <a href="{% url 'products:category-storage' pk=category.ItemCategory_id %}">  {{ category.article}}</a> 
+                </th>
+                <td class="px-2 py-1">
+                    {{ category.product_type_str }}
+                </td>
+                <td class="px-2 py-1">
+                    {{ category.brand }}
+                </td>
+                <td class="px-2 py-1">
+                    {{ category.pet_type_str }}
+                </td>
+                <td class="px-2 py-1">
+                    {{ category.weight}}
+                </td>
+                <td class="px-2 py-1">
+                    {{category.dry_type_str}}
+                </td>
+                <td class="px-2 py-1">
+                    {{category.description_str}}
+                </td>
+                <td class="px-2 py-1 font-medium">
+                    {{ category.importance}}
+                </td>
+                {%  if category.yellowzone_low_border <= category.item_count and category.item_count <= category.yellowzone_high_border %}
+                <td class="px-2 py-1 bg-amber-300 font-medium">
+                    {{category.item_count }}
+                </td>
+                {% elif category.item_count < category.yellowzone_low_border%}
+                <td class="px-2 py-1 bg-red-500 font-medium">
+                    {{category.item_count }}
+                </td>
+                {% else %}
+                <td class="px-2 py-1 font-medium">
+                    {{category.item_count }}
+                    {% endif %}
+                </td>
+                <td class="px-2 py-1 font-medium">
+                    {{category.planned_amount }}
+                </td>
+                <td class="px-2 py-1 font-medium">
+                    {{category.goods_by_weight_str}}
+                </td>
+                <td class="px-2 py-1">
+                    <a href="{% url 'products:category-update' pk=category.ItemCategory_id %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Редактировать</a>
+                </td>
+                <td class="px-2 py-1">
+                    <a href="{% url 'products:price-list' pk=category.ItemCategory_id %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{category.price_data.current_price}}</a>
+                </td>
+                <td class="px-2 py-1">
+                    {{category.price_data.current_delivery_price}}
+                </td>
+                <td class="px-2 py-1">
+                    {{category.price_data.current_markup}}
+                </td>
+                {% if not category.price_data  %}
+
+                <td class="px-2 py-1">
+                    <a href="{% url 'products:price-create' pk=category.ItemCategory_id %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Установить</a>
+                </td>
+                {% else %}
+                <td class="px-2 py-1">
+                    <a href="{% url 'products:price-update' pk=category.ItemCategory_id %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Редактировать</a>
+                </td>
+                {% endif %}
+            </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+    <div class="flex flex-col items-center mt-4">
+        <!-- Help text -->
+        <span class="text-sm text-gray-500">
+         <span class="font-medium text-black">{{ category_list.number }}</span> из <span class="font-semibold text-black">{{category_list.paginator.num_pages}}</span>
+        </span>
+        <!-- But tons -->
+          <div class="inline-flex mt-2 xs:mt-0">
+          {% if category_list.has_previous %}
+            <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ category_list.previous_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">предыдущая</a>
+            </button>
+            {% endif %}
+      
+            {% if category_list.has_next %}
+            <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ category_list.next_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">следующая</a>
+            </button>
+            {% endif %}
+          </div>
+        </div>
+</div>
+</div>
+</div>
+{%endblock%}
+

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="absolute inset-y-0 inset-x-0 left-72">
+    <div class="mt-16">
+    <h2 class="font-bold text-xl mb-4 text-center mx-auto">Создание товарной категории</h2>
+    <form method="post" class="max-w-lg  bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 " autocomplete="off">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-x-8 gap-y-4">
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="article">Артикул</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Артикул продукта</label>
+            {{ form.article}}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="name">Имя</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Внутреннее имя для категории</label>
+            {{ form.name}}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="description">Описание</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Доп. описание товара, пример: Стерелиз. 7+,Лосось,Консерв </label>
+            {{ form.description }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="product_type">Тип продукта</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">(Корм, Наполнитель, Игрушки, Медицина и т.д.)</label>
+            {{ form.product_type }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="pet_type">Вид питомца</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Вид питомца</label>
+            {{ form.pet_type }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="brand">Брэнд продукта</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Стандартный - "brand"</label>
+            {{ form.brand }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="weight">Вес</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Вес продукта в граммах. 1 - если не применимо</label>
+            {{ form.weight }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="is_dry">Сухой</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Если к товару не применимо, выбирать "unknown"</label>
+            {{ form.is_dry }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="importance">Важность</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Важность наличия продукта</label>
+            {{ form.importance }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="planned_amount">Плановое значение</label>
+            <label class="block text-gray-700 text-sm mb-2" for="name">Плановое значение в магазине</label>
+            {{ form.planned_amount }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="yellowzone_high_border">Верхняя граница желтой зоны</label>
+            {{ form.yellowzone_high_border }}
+          </div>
+          <div>
+            <label class="block text-gray-700 text-xl font-bold mb-2" for="yellowzone_low_border">Нижняя граница желтой зоны</label>
+            {{ form.yellowzone_low_border}}
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 text-xl font-bold mb-2" for="yellowzone_low_border">Товар на развес</label>
+          {{ form.goods_by_weight}}
+        </div>
+      </div>
+        <div class="flex items-center justify-between mt-4">
+          <button class="text-white bg-green-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-12 w-48" type="submit">Создать</button>
+        </div>
+      </form>
+
+
+
+    </div>
+</div>
+{% endblock %}

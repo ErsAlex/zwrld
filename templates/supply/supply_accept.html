@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="absolute inset-y-0 inset-x-0 left-72">
+<div class="flex justify-start">
+        <div>
+        <table class="w-full text-sm text-left rtl:text-right text-black-500">
+            <tr>
+                <th scope="col" class="px-0 py-3">
+                  Артикул
+                </th>
+                <th scope="col" class="px-2 py-3">
+                    Продукт
+                </th>
+                <th scope="col" class="px-2  py-3">
+                    Питомец
+                </th>
+                <th scope="col" class="px-4 py-3">
+                    Брэнд
+                </th>
+                <th scope="col" class="px-4 py-3">
+                    Имя
+                </th>
+                <th scope="col" class="px-4 py-3">
+                    Описание
+                </th>
+                <th scope="col" class="px-4 py-3">
+                    Вес
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  Тип
+                </th>
+                <th scope="col" class="px-0 py-3">
+                  Количество
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  Добавлено в магазин
+              </th>
+            </th>
+            <th scope="col" class="px-4 py-3">
+              Цена
+          </th>
+            </tr>
+        </thead>
+          {% for i in category %}
+          <tbody>
+            <tr class="bg-Black border-b">
+              <th scope="row" class="px-2 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-black">
+                <label for="category-{{ i.id }}">{{ i.article }}</label>
+              </th>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.product_type_str }}</label>
+              </td>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.pet_type_str }}</label>
+              </td>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.brand }}</label>
+              </td>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.name }}</label>
+              </td>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.description }}</label>
+              </td>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.weight }}</label>
+              </td>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.dry_type_str }}</label>
+              </td>
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.item_count }}</label>
+              </td>
+              {% if i.item_count == i.in_store %}
+              <td class="px-4 py-0 bg-green-400">
+                <label for="category-{{ i.id }}">{{ i.in_store }}</label>
+              </td>
+              {% else %}
+              <td class="px-4 py-0">
+                <label for="category-{{ i.id }}">{{ i.in_store }}</label>
+              {% endif %} 
+              </td>
+              <td class="px-4 py-0 font-bold">
+                <label for="category-{{ i.id }}">{{ i.price_data.current_price }}</label>
+              </td>
+                <td class="px-4 py-0">
+                <form method="post">
+                  {% csrf_token %}
+                <input type="text" id="category-{{ i.ItemCategory_id }}" name="category-{{ i.ItemCategory_id }}" placeholder="Штрих-код" class="w-24 h-6" autocomplete="off">
+              </td>  
+              <td class="px-4 py-0">
+                <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Добавить</label>
+                </form>
+              </td>  
+              <td class="px-6 py-4">
+                <form method="post">
+                    {% csrf_token %}
+                <button type="submit" class="font-medium text-red-600 dark:text-red hover:underline" id="delete_item_id" name="delete_item_id" value="{{i.ItemCategory_id}}">Отменить</button>
+                </form>
+            </td>
+          </tbody>
+          {%endfor%}
+        </table>
+        <div class="flex flex-col items-center mt-4">
+          <!-- Help text -->
+          <span class="text-sm text-gray-500">
+           <span class="font-medium text-black">{{ category.number }}</span> из <span class="font-semibold text-black">{{category.paginator.num_pages}}</span>
+          </span>
+          <!-- Buttons -->
+          <div class="inline-flex mt-2 xs:mt-0">
+            {% if category.has_previous %}
+              <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <a href="?page={{ category.previous_page_number }}">предыдущая</a>
+              </button>
+              {% endif %}
+        
+              {% if category.has_next %}
+              <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <a href="?page={{ category.next_page_number }}">следующая</a>
+              </button>
+              {% endif %}
+          </div>
+        </div>
+</div>
+</div>
+        <form action="{% url 'supply:supply-save' pk=supply.supply_id %}" method="post">
+          <button type="submit" class="text-white bg-green-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-cente h-10">Сохранить поставку</button>
+          {% csrf_token %}
+        </form>
+
+
+
+
+
+
+
+
+
+
+</div>
+{%endblock%}

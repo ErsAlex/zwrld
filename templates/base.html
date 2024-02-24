@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.1/dist/flowbite.min.css" />
+
+    <style>
+        .relative {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+
+    <title>Retail</title>
+
+</head>
+<body>
+    <div class="relative">
+    {% include 'nav_bar.html' %}
+    {% block content %}
+    {% endblock content %}
+    </div>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
+</body>
+</html>

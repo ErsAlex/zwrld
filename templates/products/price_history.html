@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="absolute inset-y-0 inset-x-0 left-72">
+<div class="mt-16">
+    <div class="w-1/2">
+        <h2 class="font-bold text-xl mb-4 text-center mx-auto">История цен: {{ category }}</h2>
+    <table class="w-full text-sm text-left rtl:text-right text-black-500 dark:text-black-400">
+        <thead class="text-xs text-black-700 uppercase bg-gray-50 dark:bg-black-700 dark:text-black-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Цена
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Цена Поставки
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Наценка
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Дата Изменения
+                </th>
+        </thead>
+        <tbody>
+            {%for h_price in  price_history_list %}
+            <tr class="bg-Black border-b dark:bg-white-800 dark:border-blue-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black">
+                    {{ h_price.old_price }}
+                </th>
+                <td class="px-6 py-4">
+                    {{ h_price.delivery_price }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ h_price.markup}}
+                </td>
+                <td class="px-6 py-4">
+                    {{ h_price.change_date }}
+                </td>
+                </td>
+            </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+    <div class="flex flex-col items-center mt-4">
+        <!-- Help text -->
+        <span class="text-sm text-gray-500">
+         <span class="font-medium text-black">{{ price_history_list.number }}</span> из <span class="font-semibold text-black">{{price_history_list.paginator.num_pages}}</span>
+        </span>
+        <!-- But tons -->
+          <div class="inline-flex mt-2 xs:mt-0">
+          {% if price_history_list.has_previous %}
+            <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ price_history_list.previous_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">предыдущая</a>
+            </button>
+            {% endif %}
+      
+            {% if price_history_list.has_next %}
+            <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ price_history_list.next_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">следующая</a>
+            </button>
+            {% endif %}
+          </div>
+        </div>
+</div>
+</div>
+</div>
+</div>
+{%endblock%}

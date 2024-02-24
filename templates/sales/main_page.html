@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="absolute inset-y-0 inset-x-0 left-72">
+<div class="flex flex-row gap-x-6">
+  <div class="w-1/3 mt-16">
+    <h2 class="font-bold text-xl mb-4 text-center mx-auto">Продажи сегодня</h2>
+      <table class="text-sm text-left rtl:text-right text-black-500 dark:text-black-400 w-full">
+        <thead class="border-b font-bold dark:bg-white-800 whitespace-nowrap dark:border-blue-700">
+          <td class="px-1 py-2">
+            Наименование 
+        </td>
+        <td class="px-1 py-2">
+          Цена 
+        </td>
+        <td class="px-1 py-2">
+         Оплата 
+        </td>
+        </thead>
+          <tbody>
+            {% for item in sales %}
+            <tr class="border-b dark:bg-white-800 whitespace-nowrap dark:border-blue-700">
+              <td class="px-1 py-2">
+                {{ item.item_category }}
+              </td>
+              <td class="px-1 py-2">
+                {{ item.price }}
+              </td>
+              <td class="px-1 py-2">
+                {{ item.paycheck.check_cash_str }}
+            </td>
+          </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      <div class="mt-4 font-bold">
+      Итого: {{ summary }}
+      </div>
+      <div class="flex flex-col items-center">
+        <!-- Help text -->
+        <span class="text-sm text-gray-500">
+         <span class="font-medium text-black">{{ sales.number }}</span> из <span class="font-semibold text-black">{{sales.paginator.num_pages}}</span>
+        </span>
+        <!-- Buttons -->
+        <div class="inline-flex mt-2 xs:mt-0">
+          {% if sales.has_previous %}
+            <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ sales.previous_page_number }}">предыдущая</a>
+            </button>
+            {% endif %}
+      
+            {% if sales.has_next %}
+            <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ sales.next_page_number }}">следующая</a>
+            </button>
+            {% endif %}
+        </div>
+      </div>
+    
+  </div>
+  <div class="w-1/3 max-w-[calc(100%-2rem)] overflow-x-auto mt-16">
+    <h2 class="font-bold text-xl mb-4 text-center mx-auto">Ожидаемые поставки</h2>
+    <div class="flex justify-center">
+      <div class="flex flex-col">
+    <table class="ml-6 text-sm text-center rtl:text-right text-black-500 dark:text-black-400">
+      <thead class="border-b text-center font-bold dark:bg-white-800 whitespace-nowrap dark:border-blue-700">
+        <td class="px-1 py-2">
+          Номер
+      </td>
+      <td class="px-1 py-2">
+        Название 
+      </td>
+      <td class="px-4 py-2">
+       Дата поставки
+      </td>
+      </thead>
+        <tbody>
+          {% for supply in supplies %}
+          <tr class=" border-b dark:bg-white-800 whitespace-nowrap dark:border-blue-700">
+            <td class="px-1 py-2">
+              {{ supply.supply_id}}
+            </td>
+            <td class="px-1 py-2 font-bold text-blue-500">
+              <a href="{% url 'supply:supply-accept' pk=supply.supply_id  %}">{{supply.supply_name }}</a>
+            </td>
+            <td class="px-4 py-2">
+              {{ supply.supply_delivery_date }}
+          </td>
+        </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+    <h2 class="font-bold text-xl mt-4 mb-4 text-center mx-auto">Неоформленные чеки</h2>
+    <table class="ml-6 text-sm text-left rtl:text-right text-black-500 dark:text-black-400">
+      <tbody>
+        {% for check in unsaved_paychecks %}
+        <tr class="border-b dark:bg-white-800 whitespace-nowrap dark:border-blue-700">
+      <td class="px-1 py-2 text-center">
+        <a href="{% url 'sales:paycheck-fill' pk=check.check_id %}">{{check.check_id}} {{check.check_date}} </a> 
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+    </div>
+  </div>
+  <div class="w-1/3 border-4 border-blue-500 rounded-lg p-4 h-80 mt-16 mr-8 overflow-y-auto">
+    <h2 class="font-bold text-4xl mb-4 text-center mx-auto">Новый чек</h2>
+  <div class="flex flex-col items-center space-y-6 justify-center">
+
+  <form method="post">
+    <button type="submit" id="new_check" name="new_check" value="piece_goods" class="text-white bg-emerald-600 font-medium rounded-lg text-m px-5 py-2.5 text-center inline-flex items-center w-40 h-24">Обычный товар</button>
+    {% csrf_token %}
+  </form>
+  <form method="post">
+    <button type="submit" id="new_check" name="new_check" value="weight_goods" class="text-white bg-teal-600 font-medium rounded-lg text-m px-5 py-2.5 text-center inline-flex items-center w-40 h-24">Товар на развес</button>
+    {% csrf_token %}
+  </form>
+</div>
+</div>
+  </div>
+</div>
+{% endblock content %}

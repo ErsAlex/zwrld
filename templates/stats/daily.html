@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="absolute inset-y-0 inset-x-0 left-72">
+    <div class="mt-8">
+        <div class="inline-flex shadow-sm space-x-2" role="group">
+            <a href="{% url 'stats:sales-main' %}" type="submit"class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-48  h-10">Общий отчет</a>
+            <select name="product_type" id="product_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">
+                <option hidden value="" disabled selected>Отчет по категориям</option>
+                <option href="{% url 'stats:sales-category' category='FOOD'  %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="FOOD">Корм</option>
+                <option href="{% url 'stats:sales-category' category='SNACKS'  %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="SNACKS">Вкусняшки</option>
+                <option href="{% url 'stats:sales-category' category='LITTER'  %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="LITTER">Наполнитель</option>
+                <option href="{% url 'stats:sales-category' category='MEDECINE'  %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MEDECINE">Медицина</option>
+                <option href="{% url 'stats:sales-category' category='TOYS'  %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="TOYS">Игрушки и Акссесуары</option>
+                <option href="{% url 'stats:sales-category' category='GROOMING'  %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="GROOMING">Красота и здороье</option>
+                <option href="{% url 'stats:sales-category' category='OTHER'  %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
+              </select>
+              <a href="{% url 'stats:sales-daily' %}"  class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-48  h-10">Дневной отчет</a>
+            <button type="submit"class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-48  h-10">Placeholder</button>
+        </div>
+        <div class="">
+            <form method="post" class="max-w-lg  bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                {% csrf_token %}
+                <div class="inline-flex shadow-sm space-x-2" role="group">
+                {{form.search_date }}<button type="submit"class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-48  h-10">Найти</button>
+            </div>
+            </form>
+    <table class="w-full text-sm text-left rtl:text-right text-black-500 dark:text-black-400">
+        <thead class="text-xs text-center text-black-700 uppercase bg-gray-50 dark:bg-black-700 dark:text-black-400">
+            <tr>
+                <th scope="col" class="px-2 py-1">
+                    Артикул
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Наименование
+                </th>
+                <th scope="col" class="px-2 py-1">
+                   Штрих-код
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Тип продажи
+                 </th>
+                <th scope="col" class="px-2 py-1">
+                    Цена поставки
+                </th>
+                <th scope="col" class="px-2 py-1">
+                   Цена продажи
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    Чек
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr class="text-center bg-Black border-b dark:bg-white-800 dark:border-blue-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black">
+                    {{ item.item_category.article}}
+                </th>
+                <td class="px-2 py-1">
+                    {{ item.item_category }}
+                </td>
+                <td class="px-2 py-1">
+                    {{ item.item_in_storage.barcode }}
+                </td>
+                <td class="px-2 py-1">
+                    {{ item.sold_by_weight_str}}
+                </td>
+                <td class="px-2 py-1">
+                    {{ item.supply_price }}
+                </td>
+                <td class="px-2 py-1">
+                    {{ item.price}}
+                </td>
+                <td class="px-2 py-1">
+                    {{ item.paycheck }}
+                </td>
+        {%endfor%}
+        </tbody>
+    </table>
+    <div class="flex flex-col items-center mt-4">
+        <!-- Help text -->
+        <span class="text-sm text-gray-500">
+         <span class="font-medium text-black">{{ items.number }}</span> из <span class="font-semibold text-black">{{items.paginator.num_pages}}</span>
+        </span>
+        <!-- But tons -->
+          <div class="inline-flex mt-2 xs:mt-0">
+          {% if items.has_previous %}
+            <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ items.previous_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">предыдущая</a>
+            </button>
+            {% endif %}
+      
+            {% if items.has_next %}
+            <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a href="?page={{ items.next_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">следующая</a>
+            </button>
+            {% endif %}
+          </div>
+        </div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+<script>
+    document.getElementById("product_type").addEventListener("change", function() {
+        var selectedCategory = this.value;
+        if (selectedCategory) {
+            var url = "/stats/sales/" + selectedCategory + "/";
+            window.location.href = url;
+        }
+    });
+</script>
+{% endblock %}
