@@ -17,7 +17,8 @@ class ItemCategoryModelForm(forms.ModelForm):
             'planned_amount',
             'yellowzone_high_border',
             'yellowzone_low_border',
-            'goods_by_weight'
+            'goods_by_weight',
+            'category_is_active',
         ]
 
 class ItemCategoryUpdateForm(forms.ModelForm):
@@ -36,8 +37,8 @@ class ItemCategoryUpdateForm(forms.ModelForm):
             'planned_amount',
             'yellowzone_high_border',
             'yellowzone_low_border',
-            'goods_by_weight'
-                  
+            'goods_by_weight',
+            'category_is_active',
         ]
         
      
