@@ -1,35 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="absolute inset-y-0 inset-x-0 left-72">
-    <div class="mt-16"
-    <div class="inline-flex shadow-sm space-x-2" role="group">
-        <form method="get">
-            <input type="text" id='search-query' name='search-query' class="text-black bg-white font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-cente h-10" placeholder='Поиск'>
-            <select name="product_type" id="product_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">
-              <option hidden value="" disabled selected>Продукт</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="FOOD">Корм</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="SNACKS">Вкусняшки</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="LITTER">Наполнитель</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MEDECINE">Медицина</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="TOYS">Игрушки и Акссесуары</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="GROOMING">Красота и здороье</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
-            </select>
-            <select name="pet_type" id="pet_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">
-              <option hidden value="" disabled selected>Питомец</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="CATS">Кошки</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="DOGS">Собаки</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="RODENTS">Грызуны</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="FISH">Рыбы</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="BIRDS">Птицы</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MULTIPLE">Разные</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
-              <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
-            </select>
-            <button type="submit"class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-10">Найти</button>
-            </form>
-          </div>
+  <div class="inline-flex shadow-sm space-x-2 mt-8 items-center" role="group">
+      <form method="get">
+      <div class="">
+          <label class="font-medium">Поиск по неактивным категориям :</label>
+          <input type='checkbox' class="text-gray-700 white font-medium rounded-lg text-sm px-5 text-center inline-flex h-6" name='search_scale' value="inactive">
+      </div>
+      <input type="text" id='search-query' name='search-query' class="mt-2 text-black white font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex  h-10" placeholder='Поиск'>
+      <select name="product_type" id="product_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex  h-10">
+        <option hidden value="" disabled selected>Продукт</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="FOOD">Корм</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="SNACKS">Вкусняшки</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="LITTER">Наполнитель</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MEDECINE">Медицина</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="TOYS">Игрушки и Акссесуары</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="GROOMING">Красота и здороье</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
+      </select>
+      <select name="pet_type" id="pet_type" class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex h-10">
+        <option hidden value="" disabled selected>Питомец</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg" value="CATS">Кошки</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="DOGS">Собаки</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="RODENTS">Грызуны</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="FISH">Рыбы</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="BIRDS">Птицы</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="MULTIPLE">Разные</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="OTHER">Другое</option>
+        <option class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" value="all">Все</option>
+      </select>
+      <button type="submit"class="text-white bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex   h-10">Найти</button>
+      </form>
+  </div>
           <div class="">
           <table class="w-full text-sm text-left rtl:text-right text-black-500">
               <tr class="border-b border-blue-500">
@@ -112,19 +115,19 @@
         <div class="flex flex-col items-center mt-4">
           <!-- Help text -->
           <span class="text-sm text-gray-500">
-           <span class="font-medium text-black">{{ category.number }}</span> из <span class="font-semibold text-black">{{category.paginator.num_pages}}</span>
+           <span class="font-medium text-black">{{ category_list.number }}</span> из <span class="font-semibold text-black">{{category_list.paginator.num_pages}}</span>
           </span>
           <!-- But tons -->
             <div class="inline-flex mt-2 xs:mt-0">
-            {% if category.has_previous %}
+            {% if category_list.has_previous %}
               <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                <a href="?page={{ category.previous_page_number }}">предыдущая</a>
+                <a href="?page={{ category_list.previous_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">предыдущая</a>
               </button>
               {% endif %}
         
-              {% if category.has_next %}
+              {% if category_list.has_next %}
               <button  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                <a href="?page={{ category.next_page_number }}">следующая</a>
+                <a href="?page={{ category_list.next_page_number }}{% if url_params %}&{{ url_params }}{% endif %}">следующая</a>
               </button>
               {% endif %}
             </div>

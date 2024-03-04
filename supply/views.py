@@ -51,7 +51,7 @@ def supply_acceptance_view(request, pk):
         for element in category_data:
             if element.startswith('category-'):
                 barcode = category_data[element]
-                if barcode == '':
+                if barcode == '' or len(barcode) <= 4:
                     return redirect(request.path)
                 category_id = int(element.split('-')[1])
                 if category_id:
@@ -99,63 +99,73 @@ def supply_detail_view(request, pk):
 @login_required_and_superuser
 def supply_create_detail_view(request, pk):
     paginate_by = 10
-    url_params = ""    
-    supply = get_object_or_404(Supply.objects.prefetch_related("items_in_supply"), pk=pk)
-    supply_category_queryset = ItemCategory.objects.all()
-    category_search = supply_category_queryset
+    url_params = ""
+    page = request.GET.get('page')
+    sort_by = request.GET.dict()
+    queryset = ItemCategory.objects.all()
     if request.method == 'GET':
         sort_by = request.GET.dict()
         if sort_by:
-            if sort_by["search-query"] == "":
+            if "search-query" not in sort_by or sort_by["search-query"] == "":
                 if sort_by.get("product_type"):
                     if sort_by["product_type"] != "all":
-                        category_search = category_search.filter(Q(product_type=sort_by['product_type']))
-                if sort_by.get("pet_type"):     
+                        queryset = queryset.filter(Q(product_type=sort_by['product_type']))
+                if sort_by.get("pet_type"):
                     if sort_by["pet_type"] != "all":
-                        category_search = category_search.filter(Q(pet_type=sort_by['pet_type']))
-            category_search = category_search.filter(Q(name__icontains=sort_by["search-query"]) | Q(description__icontains=sort_by['search-query']) | \
-                Q(article__icontains=sort_by['search-query']) | Q(is_dry__icontains=sort_by['search-query']) | Q(brand__icontains=sort_by['search-query'])) 
+                        queryset = queryset.filter(Q(pet_type=sort_by['pet_type']))
+            fields = ['name', 'description', 'article', 'is_dry', 'brand']
+            query = sort_by.get('search-query')
+            if query:
+                queryset = queryset.filter(reduce(lambda x, y: x | y, [Q(**{field + '__icontains': query}) for field in fields]))
             params = request.GET.copy()
             params.pop('page', None)
-            url_params = urlencode(params) 
-    supply_items = supply_category_queryset.prefetch_related("price_data").filter(Q(items_in_category__supply=supply))
+            url_params = urlencode(params)
+    paginator = Paginator(queryset, paginate_by)
+    supply = get_object_or_404(Supply, pk=pk)
+    supply_items = ItemCategory.objects.prefetch_related("price_data").filter(Q(items_in_category__supply=supply))
     supply_items = supply_items.annotate(item_count=Count('items_in_category'))
+    return render(request=request, template_name="supply/supply_create_detail.html", context={"category": paginator.get_page(page), "url_params": url_params, 'supply': supply, 'items_by_category': supply_items})
+
+
+@login_required_and_superuser
+def supply_delete(request, pk):
+    supply_for_del = get_object_or_404(Supply, pk=pk)
+    supply_for_del.delete()
+    return redirect(reverse(viewname='supply:supply-lst'))
+
+
+@login_required_and_superuser
+def add_items_to_supply(request, pk, category_id):
     if request.method == 'POST':
-        params_dict = request.POST.dict()
-        
-        if params_dict.get('delete_item_id') != None: 
-            delete_item_category_id = int(params_dict['delete_item_id'])
-            delete_item_category = get_object_or_404(ItemCategory, pk=delete_item_category_id)       
-            items_for_del = Item.objects.filter(item_category=delete_item_category, supply=supply)
-            items_for_del.delete()
-            return redirect(request.path)
-    
-        filtered_data = {}
-        creation_data = []
-        # этим циклом получаем из реквеста id категории и количество нужный item, кладем в filtered data.
-        # Внимание! не будет работать если в POST.dict() category и quantity изменят свой порядок. Осторожно с шаблонами!
-        for element in params_dict:
-            if element.startswith('category-'):
-                category_id = int(element.split('-')[1])
-                filtered_data[category_id] = 0
-            if element.startswith('quantity-'):
-                if params_dict[element] != '':
-                    quantity = int(params_dict[element])
-                    quantity_id = int(element.split('-')[1])
-                    if quantity_id in filtered_data:
-                        filtered_data[quantity_id] = quantity
-        item_categories = ItemCategory.objects.prefetch_related("price_data").in_bulk(filtered_data.keys())
-        # категории и фильтер дата - порядок и значния ключей совпадает
-        for cat_id  in filtered_data:
-            for n in range(filtered_data[cat_id]):
-                model = Item(supply=supply, item_category=item_categories[cat_id], supply_price=item_categories[cat_id].price_data.current_delivery_price)
-                creation_data.append(model)
-        Item.objects.bulk_create(creation_data)
-        
-        return redirect(request.path)
-    paginator = Paginator(category_search, paginate_by)
-    page = request.GET.get('page')             
-    return render(request, 'supply/supply_create_detail.html', context={'category': paginator.get_page(page), 'supply': supply, "items_by_category": supply_items, "url_params": url_params})
+        quantity = request.POST.get('quantity')
+        print(quantity)
+        if  quantity == None or quantity == '':
+            return redirect(reverse(viewname='supply:supply-fill', kwargs={'pk': pk}))
+        supply = get_object_or_404(Supply, pk=pk)
+        category = ItemCategory.objects.prefetch_related("price_data").get(ItemCategory_id=category_id)
+        models = []
+        for n in range(int(quantity)):
+            model = Item(
+            supply=supply,
+            item_category=category,
+            supply_price=category.price_data.current_delivery_price
+        )
+            models.append(model)
+        Item.objects.bulk_create(models)
+    return redirect(reverse(viewname='supply:supply-fill', kwargs={'pk': pk}))
+
+
+
+@login_required_and_superuser
+def delete_item_from_supply(request, pk):
+    if request.method == 'POST':
+        supply = get_object_or_404(Supply, pk=pk)
+        category_id = int(request.POST.get('category_id'))
+
+        deletion_category = get_object_or_404(ItemCategory, pk=category_id)
+        items_for_del = Item.objects.filter(item_category=deletion_category, supply=supply)
+        items_for_del.delete()
+        return redirect(reverse(viewname='supply:supply-fill', kwargs={'pk': pk}))
 
 @login_required_and_superuser
 def supply_delete(request, pk):

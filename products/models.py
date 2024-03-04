@@ -47,6 +47,8 @@ class ItemCategory(models.Model):
     yellowzone_high_border = models.IntegerField(null=True, blank=True)
     yellowzone_low_border = models.IntegerField(null=True, blank=True)
     goods_by_weight = models.BooleanField(default=False)
+    category_is_active = models.BooleanField(default=False)
+    
     
     @property
     def goods_by_weight_str(self):

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from products.models import ItemCategory, Item, Price, PriceHistory, Supply
 from urllib.parse import urlencode
 from functools import reduce
@@ -10,7 +10,7 @@ from products.forms import ItemCategoryModelForm, ItemCategoryUpdateForm, PriceU
 from users.security import LoginAndAdminRequiredMixin, login_required_and_superuser
 from django.contrib.auth.decorators import login_required
 from datetime import date
-
+import csv
 class CategoryUpdateView(UpdateView, LoginAndAdminRequiredMixin):
     form_class = ItemCategoryUpdateForm
     template_name = 'products/category_update.html'
@@ -33,15 +33,17 @@ def category_manager_view(request):
     url_params = ""
     page = request.GET.get('page')
     sort_by = request.GET.dict()
-    queryset = ItemCategory.objects.all()
+    queryset = ItemCategory.objects.filter(category_is_active=True)
     if request.method == 'GET':
         sort_by = request.GET.dict()
+        if sort_by.get("search_scale") == "inactive":
+            queryset = ItemCategory.objects.all()
         if sort_by:
             if "search-query" not in sort_by or sort_by["search-query"] == "":
                 if sort_by.get("product_type"):
                     if sort_by["product_type"] != "all":
                         queryset = queryset.filter(Q(product_type=sort_by['product_type']))
-                if sort_by.get("pet_type"):     
+                if sort_by.get("pet_type"):
                     if sort_by["pet_type"] != "all":
                         queryset = queryset.filter(Q(pet_type=sort_by['pet_type']))
             fields = ['name', 'description', 'article', 'is_dry', 'brand']
@@ -51,7 +53,7 @@ def category_manager_view(request):
             params = request.GET.copy()
             params.pop('page', None)
             url_params = urlencode(params)
-    queryset = queryset.annotate(item_count=Count('items_in_category', filter=Q(items_in_category__is_sold=False, items_in_category__in_store=True)))
+    queryset = queryset.annotate(item_count=Count('items_in_category', filter=Q(items_in_category__is_sold=False, items_in_category__in_store=True))).order_by('item_count')
     queryset = queryset.prefetch_related('price_data')
     paginator = Paginator(queryset, paginate_by)
     return render(request=request, template_name="products/product_manager.html", context={"category_list": paginator.get_page(page), "url_params": url_params})
@@ -133,9 +135,9 @@ def price_history_view(request, pk):
 
 @login_required_and_superuser
 def price_update_view(request, pk):
+    category = get_object_or_404(ItemCategory, pk=pk)
+    price = Price.objects.get(product_category=category)
     if request.method == 'POST':
-        category = get_object_or_404(ItemCategory, pk=pk)
-        price = Price.objects.get(product_category=category)
         form = PriceUpdateForm(request.POST)
         if form.is_valid():
             price_history = PriceHistory(
@@ -152,8 +154,9 @@ def price_update_view(request, pk):
         price.current_percent_markup = form.cleaned_data['current_percent_markup']
         price.save()
         return redirect('products:category-manager')
-    form = PriceUpdateForm()
+    form = PriceUpdateForm(instance=price)
     return render(request=request, template_name="products/price_update.html", context={'form': form})
+
 
 
 
@@ -163,15 +166,17 @@ def item_create(request):
     url_params = ""
     page = request.GET.get('page')
     sort_by = request.GET.dict()
-    queryset = ItemCategory.objects.all()
+    queryset = ItemCategory.objects.filter(category_is_active=True)
     if request.method == 'GET':
         sort_by = request.GET.dict()
+        if sort_by.get("search_scale") == "inactive":
+            queryset = ItemCategory.objects.all()
         if sort_by:
             if "search-query" not in sort_by or sort_by["search-query"] == "":
                 if sort_by.get("product_type"):
                     if sort_by["product_type"] != "all":
                         queryset = queryset.filter(Q(product_type=sort_by['product_type']))
-                if sort_by.get("pet_type"):     
+                if sort_by.get("pet_type"):
                     if sort_by["pet_type"] != "all":
                         queryset = queryset.filter(Q(pet_type=sort_by['pet_type']))
             fields = ['name', 'description', 'article', 'is_dry', 'brand']
@@ -181,16 +186,23 @@ def item_create(request):
             params = request.GET.copy()
             params.pop('page', None)
             url_params = urlencode(params)
-    queryset = queryset.annotate(item_count=Count('items_in_category', filter=Q(items_in_category__is_sold=False, items_in_category__in_store=True)))
+    queryset = queryset.annotate(item_count=Count('items_in_category', filter=Q(items_in_category__is_sold=False, items_in_category__in_store=True))).order_by('item_count')
     queryset = queryset.prefetch_related('price_data')
     paginator = Paginator(queryset, paginate_by)
-    if request.method == 'POST':
-        params_dict = request.POST.dict()
+    return render(request=request, template_name="products/revision.html",
+                  context={"category_list": paginator.get_page(page), "url_params": url_params})
 
-        quantity, barcode, category_id = int(params_dict.get('quantity')), params_dict.get('barcode'), int(params_dict.get('category'))
-        category = ItemCategory.objects.prefetch_related('price_data').get(ItemCategory_id=category_id)
-        revision_supply = Supply.objects.filter(revision_supply=True)
-        if not revision_supply:
+
+
+def add_items_to_category(request, pk):
+    category = ItemCategory.objects.prefetch_related('price_data').get(ItemCategory_id=pk)
+    if request.method == "POST":
+        params_dict = request.POST.dict()
+        quantity = params_dict.get('quantity')
+        barcode = params_dict.get('barcode')
+        if quantity not in (None, 0, "0", '') and len(barcode) > 4:
+            revision_supply = Supply.objects.filter(revision_supply=True)
+            if not revision_supply:
                 revision_supply = Supply(
                     supply_creation_date=date.today(),
                     supply_delivery_date=date.today(),
@@ -200,19 +212,19 @@ def item_create(request):
                     supply_name='Ревизия'
                 )
                 revision_supply.save()
-        else:
-            revision_supply = revision_supply[0]
-        model_lst = []
-        for n in range(quantity):
-            model = Item(
+            else:
+                revision_supply = revision_supply[0]
+
+            model_lst = []
+            for n in range(int(quantity)):
+                model = Item(
                 barcode=barcode,
                 in_store=True,
                 supply_price=category.price_data.current_delivery_price,
                 item_category=category,
                 supply=revision_supply
                 )
-            model_lst.append(model)
-        Item.objects.bulk_create(model_lst)
-        return redirect(request.path)
-    return render(request=request, template_name="products/revision.html", context={"category": paginator.get_page(page), "url_params": url_params})
-
+                model_lst.append(model)
+            Item.objects.bulk_create(model_lst)
+            return redirect(reverse(viewname='products:revision'))
+        return redirect(reverse(viewname='products:revision'))
